@@ -33,10 +33,15 @@ class FinishGoalVC: UIViewController, UITextFieldDelegate {
         if goalPointsTxt.text != "" {
             self.save { (complete) in
                 if complete {
-                    dismiss(animated: true, completion: nil)
+                    //dismiss(animated: true, completion: nil)
+                    performSegue(withIdentifier: "unwindtoGoalsVC", sender: nil)
                 }
             }
         }
+    }
+    
+    @IBAction func backBtnPressed(_ sender: Any) {
+        dismissDetail()
     }
     
     func save(completion: (_ finished: Bool) -> ()) {
