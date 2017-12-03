@@ -91,14 +91,37 @@ extension GoalsVC: UITableViewDelegate, UITableViewDataSource{
             self.fetchCoreData()
             tableView.deleteRows(at: [indexPath], with: .automatic)
         }
-        
+        let addAction = UITableViewRowAction(style: .normal, title: "ADD 1") { (tableViewRowAction, indexPath) in
+            self.setGoalProgress(indexpath: indexPath)
+            self.goalsTableview.reloadRows(at: [indexPath], with: .automatic)
+        }
         deleteAction.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
+        addAction.backgroundColor = #colorLiteral(red: 1, green: 0.5824048568, blue: 0.1282368232, alpha: 1)
         
-        return [deleteAction]
+        return [deleteAction, addAction]
     }
 }
 
 extension GoalsVC {
+    func setGoalProgress(indexpath: IndexPath) {
+        guard let managedContext = appDelegate?.persistentContainer.viewContext else {return}
+
+        let chosenGoal = goals[indexpath.row]
+        
+        if chosenGoal.goalProgress < chosenGoal.goalCompletionValue {
+            chosenGoal.goalProgress += 1
+        } else {
+            return
+        }
+        
+        do {
+            try managedContext.save()
+            print("successfully set successfully!")
+        } catch {
+            debugPrint("cannot set progress: \(error.localizedDescription)")
+        }
+    }
+    
     func removeGoal(indexPath: IndexPath) {
         guard let managedContext = appDelegate?.persistentContainer.viewContext else {return}
         
